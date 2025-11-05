@@ -235,9 +235,9 @@ export default function PortfolioWebsite() {
             <div className="relative group">
               <div className="text-2xl font-black tracking-tight">
                 <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-                  ALEX
+                  SAHIL
                 </span>
-                <span className="text-white"> MORGAN</span>
+                <span className="text-white"> ANSARI</span>
               </div>
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-400 to-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </div>
@@ -408,7 +408,7 @@ export default function PortfolioWebsite() {
               <div className="relative">
                 <div className="aspect-square rounded-3xl overflow-hidden border-2 border-white/10 relative group">
                   <img 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop" 
+                    src="./sahil.jpg?w=600&h=600&fit=crop" 
                     alt="Designer"
                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                   />
@@ -565,7 +565,7 @@ export default function PortfolioWebsite() {
       {/* Footer */}
       <footer className="py-10 px-6 border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">© 2025 Alex Morgan. All rights reserved.</p>
+          <p className="text-gray-500 text-sm">© 2025 sahil ansari. All rights reserved.</p>
           <p className="text-gray-500 text-sm">Crafted with passion & precision</p>
         </div>
       </footer>
