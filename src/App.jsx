@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowRight, Mail, Github, Linkedin, Twitter, Sparkles, MousePointer2, Code2, Palette, Layers } from 'lucide-react';
-
+import Head from 'next/head';
 export default function PortfolioWebsite() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -213,14 +213,12 @@ export default function PortfolioWebsite() {
 
   return (
     <>
-      {/* === SEO HEAD === */}
-      {/* === SEO HEAD === */}
-      <head>
+          <Head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
         {/* GOOGLE VERIFICATION - YOUR CODE IS HERE */}
-<meta name="google-site-verification" content="E_ZBjzLGr06H79oOkP0fimni5ctJCCehZNxZqKRZ4oc" />
+        <meta name="google-site-verification" content="E_ZBjzLGr06H79oOkP0fimni5ctJCCehZNxZqKRZ4oc" />
 
         <title>Sahil Ansari - Award-Winning Graphic Designer & UI/UX Expert | Brand Identity, Motion Graphics</title>
         <meta name="description" content="Sahil Ansari — 8+ years crafting stunning brand identities, UI/UX designs, and motion graphics. 200+ projects for global clients. Available for hire in Pakistan." />
@@ -228,57 +226,44 @@ export default function PortfolioWebsite() {
         {/* Open Graph */}
         <meta property="og:title" content="Sahil Ansari | Graphic Designer & Creative Director" />
         <meta property="og:description" content="Transforming brands through cutting-edge design. Brand Identity • UI/UX • Motion Graphics • 3D Design" />
-        <meta property="og:image" content="https://yoursite.com/sahil-og.jpg" />
-        <meta property="og:url" content="https://yoursite.com" />
+        <meta property="og:image" content="https://graphic-designer-olive.vercel.app/sahil.jpg" />
+        <meta property="og:url" content="https://graphic-designer-olive.vercel.app" />
         <meta property="og:type" content="website" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Sahil Ansari - Graphic Designer Portfolio" />
         <meta name="twitter:description" content="200+ projects. 75+ happy clients. Let's create something amazing." />
-        <meta name="twitter:image" content="https://yoursite.com/sahil-og.jpg" />
+        <meta name="twitter:image" content="https://graphic-designer-olive.vercel.app/sahil.jpg" />
 
-        <link rel="canonical" href="https://yoursite.com" />
+        <link rel="canonical" href="https://graphic-designer-olive.vercel.app" />
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Sahil Ansari" />
         <meta name="theme-color" content="#000000" />
 
-        {/* Structured Data - Person + CreativeWork */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Person",
-            "name": "Sahil Ansari",
-            "jobTitle": "Graphic Designer & UI/UX Expert",
-            "url": "https://yoursite.com",
-            "image": "https://yoursite.com/sahil.jpg",
-            "sameAs": [
-              "https://github.com/yourusername",
-              "https://linkedin.com/in/yourusername",
-              "https://twitter.com/yourusername"
-            ],
-            "worksFor": {
-              "@type": "Organization",
-              "name": "Sahil Ansari Studio"
-            },
-            "alumniOf": {
-              "@type": "CollegeOrUniversity",
-              "name": "National College of Arts"
-            },
-            "knowsAbout": ["Graphic Design", "Brand Identity", "UI/UX Design", "Motion Graphics", "3D Design"],
-            "hasOfferCatalog": {
-              "@type": "OfferCatalog",
-              "name": "Design Services",
-              "itemListElement": [
-                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Brand Identity" } },
-                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "UI/UX Design" } },
-                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Motion Graphics" } }
-              ]
-            }
-          })}
-        </script>
-      </head>
-
+        {/* Structured Data - NOW INSIDE <Head> */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Sahil Ansari",
+              "jobTitle": "Graphic Designer & UI/UX Expert",
+              "url": "https://graphic-designer-olive.vercel.app",
+              "image": "https://graphic-designer-olive.vercel.app/sahil.jpg",
+              "sameAs": [
+                "https://github.com/yourusername",
+                "https://linkedin.com/in/yourusername",
+                "https://twitter.com/yourusername"
+              ],
+              "worksFor": { "@type": "Organization", "name": "Sahil Ansari Studio" },
+              "alumniOf": { "@type": "CollegeOrUniversity", "name": "National College of Arts" },
+              "knowsAbout": ["Graphic Design", "Brand Identity", "UI/UX Design", "Motion Graphics", "3D Design"]
+            })
+          }}
+        />
+      </Head>
       <html lang="en">
         <body className="bg-black text-white min-h-screen overflow-x-hidden relative">
           {/* Animated Background Canvas */}
