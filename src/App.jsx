@@ -214,12 +214,17 @@ export default function PortfolioWebsite() {
   return (
     <>
       {/* === SEO HEAD === */}
+      {/* === SEO HEAD === */}
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        {/* GOOGLE VERIFICATION - YOUR CODE IS HERE */}
+<meta name="google-site-verification" content="E_ZBjzLGr06H79oOkP0fimni5ctJCCehZNxZqKRZ4oc" />
+
         <title>Sahil Ansari - Award-Winning Graphic Designer & UI/UX Expert | Brand Identity, Motion Graphics</title>
         <meta name="description" content="Sahil Ansari — 8+ years crafting stunning brand identities, UI/UX designs, and motion graphics. 200+ projects for global clients. Available for hire in Pakistan." />
-        
+
         {/* Open Graph */}
         <meta property="og:title" content="Sahil Ansari | Graphic Designer & Creative Director" />
         <meta property="og:description" content="Transforming brands through cutting-edge design. Brand Identity • UI/UX • Motion Graphics • 3D Design" />
