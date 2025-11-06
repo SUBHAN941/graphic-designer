@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowRight, Mail, Github, Linkedin, Twitter, Sparkles, MousePointer2, Code2, Palette, Layers } from 'lucide-react';
-import Head from 'next/head';
 export default function PortfolioWebsite() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -212,60 +211,39 @@ export default function PortfolioWebsite() {
   };
 
   return (
-    <>
-          <Head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-        {/* GOOGLE VERIFICATION - YOUR CODE IS HERE */}
-        <meta name="google-site-verification" content="E_ZBjzLGr06H79oOkP0fimni5ctJCCehZNxZqKRZ4oc" />
+   <>
+  {/* GOOGLE VERIFICATION — THIS WORKS EVERYWHERE */}
+  <meta name="google-site-verification" content="E_ZBjzLGr06H79oOkP0fimni5ctJCCehZNxZqKRZ4oc" />
+  <meta charSet="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sahil Ansari - Award-Winning Graphic Designer & UI/UX Expert</title>
+  <meta name="description" content="Sahil Ansari — 8+ years crafting stunning brand identities, UI/UX designs, and motion graphics. Available for hire in Pakistan." />
 
-        <title>Sahil Ansari - Award-Winning Graphic Designer & UI/UX Expert | Brand Identity, Motion Graphics</title>
-        <meta name="description" content="Sahil Ansari — 8+ years crafting stunning brand identities, UI/UX designs, and motion graphics. 200+ projects for global clients. Available for hire in Pakistan." />
+  {/* Open Graph + Twitter */}
+  <meta property="og:title" content="Sahil Ansari | Graphic Designer & Creative Director" />
+  <meta property="og:description" content="Transforming brands through cutting-edge design." />
+  <meta property="og:image" content="https://graphic-designer-olive.vercel.app/sahil.jpg" />
+  <meta property="og:url" content="https://graphic-designer-olive.vercel.app" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-        {/* Open Graph */}
-        <meta property="og:title" content="Sahil Ansari | Graphic Designer & Creative Director" />
-        <meta property="og:description" content="Transforming brands through cutting-edge design. Brand Identity • UI/UX • Motion Graphics • 3D Design" />
-        <meta property="og:image" content="https://graphic-designer-olive.vercel.app/sahil.jpg" />
-        <meta property="og:url" content="https://graphic-designer-olive.vercel.app" />
-        <meta property="og:type" content="website" />
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Sahil Ansari - Graphic Designer Portfolio" />
-        <meta name="twitter:description" content="200+ projects. 75+ happy clients. Let's create something amazing." />
-        <meta name="twitter:image" content="https://graphic-designer-olive.vercel.app/sahil.jpg" />
-
-        <link rel="canonical" href="https://graphic-designer-olive.vercel.app" />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="Sahil Ansari" />
-        <meta name="theme-color" content="#000000" />
-
-        {/* Structured Data - NOW INSIDE <Head> */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Person",
-              "name": "Sahil Ansari",
-              "jobTitle": "Graphic Designer & UI/UX Expert",
-              "url": "https://graphic-designer-olive.vercel.app",
-              "image": "https://graphic-designer-olive.vercel.app/sahil.jpg",
-              "sameAs": [
-                "https://github.com/yourusername",
-                "https://linkedin.com/in/yourusername",
-                "https://twitter.com/yourusername"
-              ],
-              "worksFor": { "@type": "Organization", "name": "Sahil Ansari Studio" },
-              "alumniOf": { "@type": "CollegeOrUniversity", "name": "National College of Arts" },
-              "knowsAbout": ["Graphic Design", "Brand Identity", "UI/UX Design", "Motion Graphics", "3D Design"]
-            })
-          }}
-        />
-      </Head>
-      <html lang="en">
-        <body className="bg-black text-white min-h-screen overflow-x-hidden relative">
+  {/* Structured Data */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Sahil Ansari",
+        "jobTitle": "Graphic Designer & UI/UX Expert",
+        "url": "https://graphic-designer-olive.vercel.app",
+        "image": "https://graphic-designer-olive.vercel.app/sahil.jpg"
+      })
+    }}
+  />
+  {/* REST OF YOUR SITE */}
+  <html lang="en">
+    <body className="bg-black text-white min-h-screen overflow-x-hidden relative">
+      {/* ... all your code ... */}
           {/* Animated Background Canvas */}
           <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" aria-hidden="true" />
 
