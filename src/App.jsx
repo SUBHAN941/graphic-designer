@@ -213,35 +213,7 @@ export default function PortfolioWebsite() {
   return (
   <>
     {/* ==== THIS IS THE ONLY WAY GOOGLE SEES IT ==== */}
-    <head>
-      <meta name="google-site-verification" content="E_ZBjzLGr06H79oOkP0fimni5ctJCCehZNxZqKRZ4oc" />
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>Sahil Ansari - Award-Winning Graphic Designer & UI/UX Expert</title>
-      <meta name="description" content="Sahil Ansari — 8+ years crafting stunning brand identities, UI/UX designs, and motion graphics. Available for hire in Pakistan." />
-      
-      {/* Open Graph */}
-      <meta property="og:title" content="Sahil Ansari | Graphic Designer & Creative Director" />
-      <meta property="og:description" content="Transforming brands through cutting-edge design." />
-      <meta property="og:image" content="https://graphic-designer-olive.vercel.app/sahil.jpg" />
-      <meta property="og:url" content="https://graphic-designer-olive.vercel.app" />
-      <meta name="twitter:card" content="summary_large_image" />
-
-      {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Person",
-            "name": "Sahil Ansari",
-            "jobTitle": "Graphic Designer & UI/UX Expert",
-            "url": "https://graphic-designer-olive.vercel.app",
-            "image": "https://graphic-designer-olive.vercel.app/sahil.jpg"
-          })
-        }}
-      />
-    </head>
+    
 
     <html lang="en">
       <body className="bg-black text-white min-h-screen overflow-x-hidden relative">
