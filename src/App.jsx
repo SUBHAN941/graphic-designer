@@ -8,7 +8,7 @@ import {
 
 export default function PortfolioWebsite() {
   /* ----------  SEO  ---------- */
-  const siteUrl   = 'https://sahilansari.vercel.app';
+  const siteUrl   = 'https://graphic-designer-olive.vercel.app/';
   const title     = 'Sahil Ansari – Graphic Designer & Visual Storyteller';
   const description =
     'Award-winning graphic designer crafting bold brand identities, UI/UX, motion graphics and immersive digital experiences.';
