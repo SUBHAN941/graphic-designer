@@ -2,157 +2,104 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
-  Menu, X, ArrowRight, Mail, Github, Linkedin, Twitter, Sparkles,
-  MousePointer2, Code2, Palette, Layers
+  ArrowRight, ArrowUpRight, ArrowUp, Mail, Github, Linkedin, Twitter, Instagram,
+  Palette, LayoutGrid, Clapperboard, Check, Quote,
 } from 'lucide-react';
+
+const CONTACT_EMAIL = 'hello@sahilansari.com';
+const NAV_ITEMS = ['Work', 'About', 'Services', 'Contact'];
+
+const projects = [
+  { id: 1, title: 'Quantum Branding', category: 'Brand Identity', description: 'Futuristic tech brand with holographic elements', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=900&h=700&fit=crop', tech: ['Illustrator', 'After Effects'] },
+  { id: 2, title: 'NeuroFlow App', category: 'UI/UX Design', description: 'Mental wellness app with biometric integration', image: 'https://images.unsplash.com/photo-1618761714954-0b8cd0026356?w=900&h=700&fit=crop', tech: ['Figma', 'Protopie'] },
+  { id: 3, title: 'Ethereal Cosmetics', category: 'Packaging', description: 'Luxury skincare with sustainable packaging', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=900&h=700&fit=crop', tech: ['Photoshop', 'Dimension'] },
+  { id: 4, title: 'Vogue Parallax', category: 'Editorial', description: 'Interactive digital magazine experience', image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=900&h=700&fit=crop', tech: ['InDesign', 'WebGL'] },
+  { id: 5, title: 'Zenith Studios', category: 'Motion Graphics', description: '3D animated logo reveal and brand toolkit', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&h=700&fit=crop', tech: ['Cinema 4D', 'After Effects'] },
+  { id: 6, title: 'Metaverse Gallery', category: '3D Design', description: 'Virtual art exhibition space', image: 'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=900&h=700&fit=crop', tech: ['Blender', 'Unreal Engine'] },
+];
+
+const services = [
+  {
+    icon: <Palette className="w-6 h-6" />,
+    title: 'Brand Identity',
+    description: 'Distinctive visual identities built on strategy — logos, systems, and guidelines that scale with your brand.',
+    deliverables: ['Logo & wordmark', 'Visual identity systems', 'Brand guidelines'],
+  },
+  {
+    icon: <LayoutGrid className="w-6 h-6" />,
+    title: 'UI/UX Design',
+    description: 'Intuitive, research-driven interfaces that balance clarity and craft for web and mobile products.',
+    deliverables: ['Wireframes & prototypes', 'Design systems', 'Usability testing'],
+  },
+  {
+    icon: <Clapperboard className="w-6 h-6" />,
+    title: 'Motion & Art Direction',
+    description: 'Campaign direction and motion work that brings brands to life across every screen and touchpoint.',
+    deliverables: ['Motion graphics', 'Art direction', '3D & animation'],
+  },
+];
+
+const skills = ['Brand Identity', 'UI/UX Design', 'Typography', 'Motion Graphics', 'Art Direction', 'Packaging', 'Editorial Design', '3D Design'];
 
 export default function PortfolioWebsite() {
   /* ----------  SEO  ---------- */
-  const siteUrl   = 'https://graphic-designer-olive.vercel.app/';
-  const title     = 'Sahil Ansari – Graphic Designer & Visual Storyteller';
+  const siteUrl = 'https://graphic-designer-olive.vercel.app/';
+  const title = 'Sahil Ansari — Graphic Designer & Visual Storyteller';
   const description =
-    'Award-winning graphic designer crafting bold brand identities, UI/UX, motion graphics and immersive digital experiences.';
-  const ogImage   = `${siteUrl}/og-image.jpg`;
+    'Graphic designer crafting bold brand identities, UI/UX, motion graphics and immersive digital experiences for brands worldwide.';
+  const ogImage = `${siteUrl}og-image.jpg`;
 
   /* ----------  state / refs  ---------- */
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [cursorVariant, setCursorVariant] = useState('default');
-  const [visibleElements, setVisibleElements] = useState(new Set());
-  const canvasRef = useRef(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(new Set());
   const observerRef = useRef(null);
 
-  /* ----------  effects  ---------- */
+  /* ----------  scroll state  ---------- */
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  /* ----------  reveal-on-scroll  ---------- */
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setVisibleElements((prev) => new Set([...prev, entry.target.dataset.animateId]));
-          } else {
-            setVisibleElements((prev) => {
-              const n = new Set(prev);
-              n.delete(entry.target.dataset.animateId);
-              return n;
-            });
+            setVisible((prev) => new Set(prev).add(entry.target.dataset.reveal));
+            observerRef.current.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
     );
-    document.querySelectorAll('[data-animate-id]').forEach((el) =>
-      observerRef.current.observe(el)
-    );
+    document.querySelectorAll('[data-reveal]').forEach((el) => observerRef.current.observe(el));
     return () => observerRef.current?.disconnect();
   }, []);
 
-  /* ----------  particle canvas  ---------- */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
+  const reveal = (id, delay = 0) => ({
+    'data-reveal': id,
+    style: { transitionDelay: `${delay}ms` },
+    className: `reveal ${visible.has(id) ? 'reveal--in' : ''}`,
+  });
 
-    const particles = [];
-    const count = 50;
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2 + 1,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        color: `hsla(${Math.random() * 60 + 260}, 70%, 60%, ${Math.random() * 0.3 + 0.1})`,
-      });
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p, i) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-
-        particles.slice(i + 1).forEach((p2) => {
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(168,85,247,${0.1 * (1 - dist / 150)})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-          }
-        });
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
-    return () => window.removeEventListener('resize', resize);
-  }, []);
-
-  /* ----------  data  ---------- */
-  const projects = [
-    { id: 1, title: 'Quantum Branding', category: 'Brand Identity', description: 'Futuristic tech brand with holographic elements', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=600&fit=crop', gradient: 'from-violet-600 via-purple-600 to-fuchsia-600', tech: ['Illustrator', 'After Effects'] },
-    { id: 2, title: 'NeuroFlow App', category: 'UI/UX Design', description: 'Mental wellness app with biometric integration', image: 'https://images.unsplash.com/photo-1618761714954-0b8cd0026356?w=800&h=600&fit=crop', gradient: 'from-cyan-500 via-blue-600 to-indigo-700', tech: ['Figma', 'Protopie'] },
-    { id: 3, title: 'Ethereal Cosmetics', category: 'Packaging', description: 'Luxury skincare with sustainable packaging', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=800&h=600&fit=crop', gradient: 'from-emerald-500 via-teal-600 to-cyan-600', tech: ['Photoshop', 'Dimension'] },
-    { id: 4, title: 'Vogue Parallax', category: 'Editorial', description: 'Interactive digital magazine experience', image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&h=600&fit=crop', gradient: 'from-rose-500 via-pink-600 to-red-600', tech: ['InDesign', 'WebGL'] },
-    { id: 5, title: 'Zenith Studios', category: 'Motion Graphics', description: '3D animated logo reveal and brand toolkit', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=600&fit=crop', gradient: 'from-amber-500 via-orange-600 to-red-600', tech: ['Cinema 4D', 'After Effects'] },
-    { id: 6, title: 'Metaverse Gallery', category: '3D Design', description: 'Virtual art exhibition space', image: 'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=800&h=600&fit=crop', gradient: 'from-indigo-600 via-purple-600 to-pink-600', tech: ['Blender', 'Unreal Engine'] },
+  const socials = [
+    { icon: <Github size={18} />, href: '#', label: 'GitHub' },
+    { icon: <Linkedin size={18} />, href: '#', label: 'LinkedIn' },
+    { icon: <Twitter size={18} />, href: '#', label: 'Twitter' },
+    { icon: <Instagram size={18} />, href: '#', label: 'Instagram' },
   ];
 
-  const services = [
-    { icon: <Palette className="w-8 h-8" />, title: 'Brand Identity', description: 'Crafting unique visual identities that resonate with your audience and stand the test of time.' },
-    { icon: <Layers className="w-8 h-8" />, title: 'UI/UX Design', description: 'Designing intuitive interfaces that blend aesthetics with seamless user experiences.' },
-    { icon: <Code2 className="w-8 h-8" />, title: 'Motion Graphics', description: 'Bringing designs to life with captivating animations and dynamic visual storytelling.' },
-  ];
-
-  const getAnimationClass = (id, animationType = 'fade-up') => {
-    const isVisible = visibleElements.has(id);
-    const animations = {
-      'fade-up': isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20',
-      'fade-left': isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20',
-      'fade-right': isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20',
-      scale: isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
-      rotate: isVisible ? 'opacity-100 rotate-0' : 'opacity-0 -rotate-3',
-    };
-    return `transition-all duration-1000 ease-out ${animations[animationType]}`;
-  };
-
-  /* --------------  RENDER  -------------- */
   return (
     <>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={siteUrl} />
+        <meta name="theme-color" content="#faf9f7" />
 
         <meta property="og:type" content="website" />
         <meta property="og:url" content={siteUrl} />
@@ -166,273 +113,392 @@ export default function PortfolioWebsite() {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
 
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
       </Helmet>
 
-      {/* PAGE MARKUP */}
-      <div className="bg-black text-white min-h-screen overflow-x-hidden relative">
-        {/* Particle canvas */}
-        <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />
+      <div className="bg-[#faf9f7] text-stone-900 min-h-screen antialiased selection:bg-stone-900 selection:text-white">
+        {/* ---------------- Navigation ---------------- */}
+        <header
+          className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+            scrolled ? 'bg-[#faf9f7]/85 backdrop-blur-md border-b border-stone-900/10' : 'bg-transparent border-b border-transparent'
+          }`}
+        >
+          <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#top" className="flex items-center gap-3 group">
+              <span className="w-9 h-9 rounded-lg bg-stone-900 text-white flex items-center justify-center font-display font-semibold text-sm tracking-tight group-hover:bg-stone-700 transition-colors">
+                SA
+              </span>
+              <span className="font-medium tracking-tight text-[15px]">
+                Sahil Ansari
+              </span>
+            </a>
 
-        {/* Custom cursor */}
-        <div
-          className="fixed w-4 h-4 rounded-full border-2 border-purple-500 pointer-events-none z-50 transition-all duration-100 mix-blend-difference"
-          style={{ left: `${mousePosition.x}px`, top: `${mousePosition.y}px`, transform: 'translate(-50%, -50%) scale(' + (cursorVariant === 'hover' ? 2 : 1) + ')' }}
-        />
+            <nav className="hidden md:flex items-center gap-9">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm text-stone-600 hover:text-stone-900 transition-colors tracking-wide"
+                >
+                  {item}
+                </a>
+              ))}
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-2 bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-stone-700 transition-colors"
+              >
+                Let's talk <ArrowUpRight size={15} />
+              </a>
+            </nav>
 
-        {/* Navigation */}
-        <nav className={`fixed w-full z-40 transition-all duration-500 ${scrollY > 50 ? 'bg-black/60 backdrop-blur-2xl border-b border-white/5 shadow-2xl' : 'bg-transparent'}`}>
-          <div className="max-w-7xl mx-auto px-6 py-5">
-            <div className="flex justify-between items-center">
-              <div className="relative group">
-                <div className="text-2xl font-black tracking-tight">
-                  <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">SAHIL</span>
-                  <span className="text-white"> ANSARI</span>
-                </div>
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-400 to-cyan-400 group-hover:w-full transition-all duration-300"></div>
-              </div>
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-stone-900/15 text-stone-700"
+              aria-label="Toggle menu"
+            >
+              <span className="text-lg leading-none">{isMenuOpen ? '✕' : '☰'}</span>
+            </button>
+          </div>
 
-              <div className="hidden md:flex gap-8 items-center">
-                {['Home', 'Work', 'About', 'Services', 'Contact'].map((item) => (
-                  <a key={item} href={`#${item.toLowerCase()}`} className="relative group text-sm font-medium tracking-wide" onMouseEnter={() => setCursorVariant('hover')} onMouseLeave={() => setCursorVariant('default')}>
-                    <span className="relative z-10 transition-colors group-hover:text-purple-400">{item}</span>
-                    <span className="absolute inset-x-0 -bottom-1 h-px bg-gradient-to-r from-violet-400 to-cyan-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+          {isMenuOpen && (
+            <div className="md:hidden border-t border-stone-900/10 bg-[#faf9f7]/95 backdrop-blur-md">
+              <nav className="px-6 py-4 flex flex-col">
+                {NAV_ITEMS.map((item) => (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="py-3 text-stone-700 border-b border-stone-900/5 last:border-0"
+                  >
+                    {item}
                   </a>
                 ))}
-                <button className="relative group overflow-hidden px-6 py-2.5 rounded-full font-medium text-sm">
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 transition-transform group-hover:scale-105"></div>
-                  <span className="relative z-10">Hire Me</span>
-                </button>
-              </div>
-
-              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden">
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
+              </nav>
             </div>
+          )}
+        </header>
 
-            {isMenuOpen && (
-              <div className="md:hidden pt-6 pb-4 space-y-4 animate-in slide-in-from-top">
-                {['Home', 'Work', 'About', 'Services', 'Contact'].map((item) => (
-                  <a key={item} href={`#${item.toLowerCase()}`} className="block py-2 hover:text-purple-400 transition-colors">{item}</a>
-                ))}
-              </div>
-            )}
-          </div>
-        </nav>
-
-        {/* Hero */}
-        <section id="home" className="min-h-screen flex items-center justify-center relative pt-20">
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-950/30 via-black to-fuchsia-950/30"></div>
-          <div className="absolute top-1/4 left-10 w-32 h-32 bg-violet-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-10 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-
-          <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-            <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full px-5 py-2.5 mb-10 animate-fade-in">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <span className="text-sm font-medium">Available for Projects</span>
-              <Sparkles size={14} className="text-violet-400" />
-            </div>
-
-            <h1 className="text-7xl md:text-9xl font-black mb-8 tracking-tight animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <span className="block bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">DESIGN</span>
-              <span className="block text-white">EXCELLENCE</span>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed font-light animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              Pushing the boundaries of visual design with cutting-edge creativity, transforming brands into immersive digital experiences that captivate and inspire.
-            </p>
-
-            <div className="flex gap-5 justify-center flex-wrap animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <button className="group relative overflow-hidden px-10 py-4 rounded-full font-semibold text-lg" onMouseEnter={() => setCursorVariant('hover')} onMouseLeave={() => setCursorVariant('default')}>
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 via-fuchsia-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <span className="relative z-10 flex items-center gap-2">Explore Work <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} /></span>
-              </button>
-              <button className="px-10 py-4 rounded-full font-semibold text-lg bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all">Let's Talk</button>
-            </div>
-
-            <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-20 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-              {[
-                { number: '200+', label: 'Projects Completed' },
-                { number: '75+', label: 'Happy Clients' },
-                { number: '15+', label: 'Awards Won' }
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent mb-2">{stat.number}</div>
-                  <div className="text-sm text-gray-500 font-medium">{stat.label}</div>
+        {/* ---------------- Hero ---------------- */}
+        <section id="top" className="relative pt-36 md:pt-44 pb-20 md:pb-28 scroll-mt-24">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid md:grid-cols-12 gap-12 items-center">
+              <div className="md:col-span-7">
+                <div className="inline-flex items-center gap-2.5 border border-stone-900/15 rounded-full px-4 py-1.5 mb-8">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+                  </span>
+                  <span className="text-sm text-stone-600">Available for select projects — 2026</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* Work */}
-        <section id="work" className="py-32 px-6 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div data-animate-id="work-header" className={getAnimationClass('work-header', 'fade-up')}>
-              <div className="mb-20">
-                <h2 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">FEATURED WORK</h2>
-                <p className="text-gray-400 text-xl max-w-2xl">Crafting pixel-perfect designs that blend artistry with innovation</p>
-              </div>
-            </div>
+                <h1 className="font-display font-medium text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-[4.35rem] tracking-tight text-stone-900">
+                  Design that makes brands{' '}
+                  <em className="italic text-stone-600">unforgettable</em>.
+                </h1>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {projects.map((project, index) => (
-                <div
-                  key={project.id}
-                  data-animate-id={`project-${project.id}`}
-                  className={`group relative aspect-[4/3] overflow-hidden rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 cursor-pointer ${getAnimationClass(`project-${project.id}`, index % 2 === 0 ? 'fade-left' : 'fade-right')}`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                  onMouseEnter={() => setCursorVariant('hover')}
-                  onMouseLeave={() => setCursorVariant('default')}
-                >
-                  <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
-                  <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-95 transition-all duration-500`}>
-                    <div className="absolute inset-0 flex flex-col justify-end p-8 translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
-                      <span className="text-xs font-bold uppercase tracking-widest mb-3 opacity-80">{project.category}</span>
-                      <h3 className="text-3xl font-black mb-3">{project.title}</h3>
-                      <p className="text-sm opacity-90 mb-4">{project.description}</p>
-                      <div className="flex gap-2">
-                        {project.tech.map((tech, i) => (
-                          <span key={i} className="text-xs px-3 py-1.5 bg-black/30 rounded-full backdrop-blur-sm">{tech}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute top-6 right-6 w-12 h-12 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ArrowRight className="transform -rotate-45" size={20} />
-                  </div>
+                <p className="mt-7 text-lg text-stone-600 leading-relaxed max-w-xl">
+                  I'm Sahil Ansari, an independent graphic designer working across brand identity,
+                  UI/UX and motion. Eight years of turning ambitious ideas into clear, confident,
+                  award-winning visual work.
+                </p>
+
+                <div className="mt-10 flex flex-wrap items-center gap-4">
+                  <a
+                    href="#work"
+                    className="inline-flex items-center gap-2 bg-stone-900 text-white font-medium px-7 py-3.5 rounded-full hover:bg-stone-700 transition-colors"
+                  >
+                    View selected work <ArrowRight size={17} />
+                  </a>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="inline-flex items-center gap-2 border border-stone-900/20 font-medium px-7 py-3.5 rounded-full hover:border-stone-900 hover:bg-white transition-colors"
+                  >
+                    <Mail size={17} /> Get in touch
+                  </a>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* About */}
-        <section id="about" className="py-32 px-6 relative z-10 bg-gradient-to-b from-transparent via-violet-950/10 to-transparent">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div data-animate-id="about-image" className={`relative order-2 md:order-1 ${getAnimationClass('about-image', 'fade-right')}`}>
-                <div className="relative">
-                  <div className="aspect-square rounded-3xl overflow-hidden border-2 border-white/10 relative group">
-                    <img src="./sahil.jpg?w=600&h=600&fit=crop" alt="Designer" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-transparent to-fuchsia-600/20"></div>
-                  </div>
-                  <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-                  <div className="absolute -top-8 -left-8 w-48 h-48 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
-                </div>
-              </div>
-
-              <div data-animate-id="about-content" className={`order-1 md:order-2 ${getAnimationClass('about-content', 'fade-left')}`}>
-                <h2 className="text-6xl md:text-8xl font-black mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">ABOUT ME</h2>
-                <p className="text-gray-400 text-lg mb-6 leading-relaxed">I'm a passionate graphic designer with over 8 years of experience creating compelling visual narratives for brands worldwide. My work blends creativity with strategy to deliver designs that not only look beautiful but drive results.</p>
-                <p className="text-gray-400 text-lg mb-8 leading-relaxed">I specialize in brand identity, UI/UX design, and visual storytelling. Every project is an opportunity to push boundaries and create something extraordinary.</p>
-
-                <div className="grid grid-cols-3 gap-6 mb-8">
+                <dl className="mt-14 grid grid-cols-3 gap-8 max-w-lg">
                   {[
-                    { number: '8+', label: 'Years Experience', color: 'from-violet-400 to-purple-400' },
-                    { number: '200+', label: 'Projects Done', color: 'from-fuchsia-400 to-pink-400' },
-                    { number: '75+', label: 'Happy Clients', color: 'from-cyan-400 to-blue-400' }
-                  ].map((stat, i) => (
-                    <div key={i} data-animate-id={`about-stat-${i}`} className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10" style={{ transitionDelay: `${i * 100}ms` }}>
-                      <div className={`text-4xl font-black mb-2 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.number}</div>
-                      <div className="text-xs text-gray-500 font-medium">{stat.label}</div>
+                    { number: '8+', label: 'Years of experience' },
+                    { number: '200+', label: 'Projects delivered' },
+                    { number: '75+', label: 'Happy clients' },
+                  ].map((stat) => (
+                    <div key={stat.label}>
+                      <dt className="font-display text-3xl sm:text-4xl font-medium tracking-tight">{stat.number}</dt>
+                      <dd className="mt-1.5 text-sm text-stone-500 leading-snug">{stat.label}</dd>
                     </div>
+                  ))}
+                </dl>
+              </div>
+
+              <div className="md:col-span-5">
+                <div className="relative max-w-sm md:max-w-none mx-auto">
+                  <div className="aspect-[4/5] overflow-hidden rounded-2xl border border-stone-900/10 bg-stone-200">
+                    <img
+                      src="/sahil.jpg"
+                      alt="Sahil Ansari, graphic designer"
+                      className="w-full h-full object-cover"
+                      loading="eager"
+                    />
+                  </div>
+                  <div className="absolute -bottom-5 -left-5 bg-white border border-stone-900/10 rounded-xl shadow-lg shadow-stone-900/5 px-5 py-4">
+                    <p className="font-display text-2xl font-medium leading-none">15+</p>
+                    <p className="text-xs text-stone-500 mt-1.5">Design awards</p>
+                  </div>
+                  <div className="hidden sm:flex absolute -top-5 -right-5 items-center gap-2 bg-stone-900 text-white rounded-full pl-2 pr-4 py-2">
+                    <span className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center">
+                      <Quote size={14} />
+                    </span>
+                    <span className="text-xs leading-tight max-w-[7.5rem]">
+                      Precision in every pixel
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- Work ---------------- */}
+        <section id="work" className="py-24 md:py-32 border-t border-stone-900/10 scroll-mt-24">
+          <div className="max-w-6xl mx-auto px-6">
+            <div {...reveal('work-header')} className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+              <div>
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-500 mb-4">
+                  Selected Work
+                </p>
+                <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight">
+                  Recent projects
+                </h2>
+              </div>
+              <p className="text-stone-600 max-w-sm md:text-right">
+                A selection of brand, product and motion work from the last few years.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map((project, i) => (
+                <a
+                  key={project.id}
+                  href="#contact"
+                  {...reveal(`project-${project.id}`, (i % 3) * 90)}
+                  className="group block bg-white border border-stone-900/10 rounded-2xl overflow-hidden hover:border-stone-900/25 hover:shadow-xl hover:shadow-stone-900/5 transition-all duration-300"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-stone-100">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    <span className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 border border-stone-900/10 flex items-center justify-center opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      <ArrowUpRight size={17} />
+                    </span>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-xs font-medium uppercase tracking-[0.14em] text-stone-500 mb-2">
+                      {project.category}
+                    </p>
+                    <h3 className="font-display text-xl font-medium tracking-tight mb-2">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-stone-600 leading-relaxed mb-4">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                      {project.tech.map((t) => (
+                        <span key={t} className="text-xs text-stone-500 flex items-center gap-3">
+                          <span className="w-1 h-1 rounded-full bg-stone-400" />
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- About ---------------- */}
+        <section id="about" className="py-24 md:py-32 border-t border-stone-900/10 bg-white scroll-mt-24">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid md:grid-cols-12 gap-12">
+              <div {...reveal('about-label')} className="md:col-span-4">
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-500 mb-4">
+                  About
+                </p>
+                <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight leading-tight">
+                  Eight years of design, <em className="italic text-stone-600">done with intent</em>.
+                </h2>
+              </div>
+
+              <div className="md:col-span-7 md:col-start-6">
+                <p {...reveal('about-p1')} className="text-lg text-stone-700 leading-relaxed mb-6">
+                  I'm a graphic designer who partners with startups, studios and established brands
+                  around the world. My practice sits at the intersection of strategy and craft —
+                  every mark, grid and motion frame is made to communicate clearly and last.
+                </p>
+                <p {...reveal('about-p2', 80)} className="text-lg text-stone-600 leading-relaxed mb-10">
+                  From complete identity systems to product interfaces and campaign direction, I
+                  partner closely with clients to build visual language that feels considered,
+                  confident and unmistakably theirs.
+                </p>
+
+                <div {...reveal('about-skills', 120)} className="flex flex-wrap gap-2.5 mb-10">
+                  {skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="text-sm px-4 py-2 rounded-full border border-stone-900/15 text-stone-700 bg-[#faf9f7]"
+                    >
+                      {skill}
+                    </span>
                   ))}
                 </div>
 
-                <button className="group relative overflow-hidden px-8 py-4 rounded-full font-semibold" onMouseEnter={() => setCursorVariant('hover')} onMouseLeave={() => setCursorVariant('default')}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600"></div>
-                  <span className="relative z-10 flex items-center gap-2">Download Resume <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} /></span>
-                </button>
+                <a
+                  href="#contact"
+                  {...reveal('about-cta', 160)}
+                  className="inline-flex items-center gap-2 bg-stone-900 text-white font-medium px-7 py-3.5 rounded-full hover:bg-stone-700 transition-colors"
+                >
+                  Work with me <ArrowRight size={17} />
+                </a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Services */}
-        <section id="services" className="py-32 px-6 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div data-animate-id="services-header" className={`text-center mb-20 ${getAnimationClass('services-header', 'fade-up')}`}>
-              <h2 className="text-6xl md:text-8xl font-black mb-6">SERVICES</h2>
-              <p className="text-gray-400 text-xl">End-to-end design solutions</p>
+        {/* ---------------- Services ---------------- */}
+        <section id="services" className="py-24 md:py-32 border-t border-stone-900/10 scroll-mt-24">
+          <div className="max-w-6xl mx-auto px-6">
+            <div {...reveal('services-header')} className="text-center max-w-xl mx-auto mb-16">
+              <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-500 mb-4">
+                Services
+              </p>
+              <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight">
+                What I do
+              </h2>
+              <p className="mt-5 text-stone-600 leading-relaxed">
+                End-to-end design services, delivered with the attention to detail of an independent
+                studio.
+              </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {services.map((service, index) => (
+            <div className="grid md:grid-cols-3 gap-6">
+              {services.map((service, i) => (
                 <div
-                  key={index}
-                  data-animate-id={`service-${index}`}
-                  className={`group relative p-10 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 overflow-hidden ${getAnimationClass(`service-${index}`, 'scale')}`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                  onMouseEnter={() => setCursorVariant('hover')}
-                  onMouseLeave={() => setCursorVariant('default')}
+                  key={service.title}
+                  {...reveal(`service-${i}`, i * 100)}
+                  className="group relative bg-white border border-stone-900/10 rounded-2xl p-8 hover:border-stone-900/25 hover:shadow-xl hover:shadow-stone-900/5 transition-all duration-300"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-600/0 to-fuchsia-600/0 group-hover:from-violet-600/10 group-hover:to-fuchsia-600/10 transition-all duration-500"></div>
-                  <div className="relative z-10">
-                    <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">{service.icon}</div>
-                    <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-                    <p className="text-gray-400 leading-relaxed">{service.description}</p>
+                  <div className="flex items-start justify-between mb-7">
+                    <span className="w-12 h-12 rounded-xl bg-[#faf9f7] border border-stone-900/10 flex items-center justify-center text-stone-800 group-hover:bg-stone-900 group-hover:text-white transition-colors duration-300">
+                      {service.icon}
+                    </span>
+                    <span className="font-display text-sm text-stone-400">
+                      0{i + 1}
+                    </span>
                   </div>
+                  <h3 className="font-display text-2xl font-medium tracking-tight mb-3">
+                    {service.title}
+                  </h3>
+                  <p className="text-stone-600 leading-relaxed mb-6">
+                    {service.description}
+                  </p>
+                  <ul className="space-y-2.5 border-t border-stone-900/10 pt-6">
+                    {service.deliverables.map((d) => (
+                      <li key={d} className="flex items-center gap-3 text-sm text-stone-700">
+                        <Check size={15} className="text-stone-500 shrink-0" />
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section id="contact" className="py-32 px-6 relative z-10">
-          <div className="max-w-5xl mx-auto text-center relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 via-fuchsia-600/20 to-cyan-600/20 blur-3xl"></div>
-            <div data-animate-id="contact-card" className={`relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-16 ${getAnimationClass('contact-card', 'scale')}`}>
-              <h2 className="text-5xl md:text-7xl font-black mb-6">
-                <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">LET'S CREATE</span>
-                <br />
-                SOMETHING AMAZING
-              </h2>
-              <p className="text-gray-400 text-xl mb-10 max-w-2xl mx-auto">Ready to elevate your brand? Let's collaborate and craft extraordinary experiences together.</p>
+        {/* ---------------- Contact ---------------- */}
+        <section id="contact" className="scroll-mt-24">
+          <div className="bg-stone-950 text-stone-100">
+            <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
+              <div {...reveal('contact-inner')}>
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-400 mb-5">
+                  Contact
+                </p>
+                <h2 className="font-display text-4xl sm:text-6xl font-medium tracking-tight text-white max-w-2xl mx-auto leading-[1.1]">
+                  Have a project in mind? <em className="italic text-stone-400">Let's talk.</em>
+                </h2>
+                <p className="mt-6 text-stone-400 text-lg max-w-xl mx-auto leading-relaxed">
+                  Whether it's a full rebrand, a product launch or a campaign that needs direction,
+                  I'd love to hear what you're building.
+                </p>
 
-              <div className="flex gap-5 justify-center flex-wrap mb-10">
-                <button className="group relative overflow-hidden px-10 py-5 rounded-full font-semibold text-lg">
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600"></div>
-                  <span className="relative z-10 flex items-center gap-2"><Mail size={20} /> Start a Project</span>
-                </button>
-                <button className="px-10 py-5 rounded-full font-semibold text-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">Download CV</button>
-              </div>
-
-              <div className="flex gap-5 justify-center">
-                {[
-                  { icon: <Github size={22} />, href: '#' },
-                  { icon: <Linkedin size={22} />, href: '#' },
-                  { icon: <Twitter size={22} />, href: '#' }
-                ].map((social, i) => (
-                  <a key={i} href={social.href} className="w-14 h-14 bg-white/5 backdrop-blur-xl rounded-full flex items-center justify-center hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all group" onMouseEnter={() => setCursorVariant('hover')} onMouseLeave={() => setCursorVariant('default')}>
-                    <div className="transform group-hover:scale-110 transition-transform">{social.icon}</div>
+                <div className="mt-10 flex flex-wrap justify-center gap-4">
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="inline-flex items-center gap-2 bg-white text-stone-900 font-medium px-7 py-3.5 rounded-full hover:bg-stone-200 transition-colors"
+                  >
+                    <Mail size={17} /> {CONTACT_EMAIL}
                   </a>
-                ))}
+                  <a
+                    href="#work"
+                    className="inline-flex items-center gap-2 border border-white/25 font-medium px-7 py-3.5 rounded-full hover:border-white hover:bg-white/5 transition-colors"
+                  >
+                    See more work <ArrowRight size={17} />
+                  </a>
+                </div>
+
+                <div className="mt-12 flex justify-center gap-3">
+                  {socials.map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      aria-label={s.label}
+                      className="w-11 h-11 rounded-full border border-white/15 flex items-center justify-center text-stone-300 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all"
+                    >
+                      {s.icon}
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
+
+            {/* Footer */}
+            <footer className="border-t border-white/10">
+              <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-sm text-stone-500">
+                  © {new Date().getFullYear()} Sahil Ansari. All rights reserved.
+                </p>
+                <nav className="flex items-center gap-7">
+                  {NAV_ITEMS.map((item) => (
+                    <a
+                      key={item}
+                      href={`#${item.toLowerCase()}`}
+                      className="text-sm text-stone-500 hover:text-stone-200 transition-colors"
+                    >
+                      {item}
+                    </a>
+                  ))}
+                  <a
+                    href="#top"
+                    aria-label="Back to top"
+                    className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-stone-300 hover:text-white hover:border-white/40 transition-colors"
+                  >
+                    <ArrowUp size={15} />
+                  </a>
+                </nav>
+              </div>
+            </footer>
           </div>
         </section>
-
-        {/* Footer */}
-        <footer className="py-10 px-6 border-t border-white/5 relative z-10">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">© 2025 sahil ansari. All rights reserved.</p>
-            <p className="text-gray-500 text-sm">Crafted with passion & precision</p>
-          </div>
-        </footer>
-
-        <style jsx>{`
-          @keyframes fade-in {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          .animate-fade-in { animation: fade-in 1s ease-out forwards; opacity: 0; }
-        `}</style>
       </div>
     </>
   );
